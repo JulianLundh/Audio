@@ -1,0 +1,69 @@
+substitutions:
+  name: "m5stack-atom-speaker-kit"
+  friendly_name: "M5Stack Atom Speaker Kit"
+  wifi_ap_password: ""
+
+esphome:
+  name: ${name}
+  friendly_name: ${friendly_name}
+  name_add_mac_suffix: true
+  project:
+    name: m5stack.atom-speaker-kit
+    version: "1.0"
+
+esp32:
+  board: m5stack-atom
+  framework:
+    type: arduino
+
+logger:
+api:
+ota:
+
+dashboard_import:
+  package_import_url: github://esphome/media-players/m5stack-atom-speaker-kit.yaml@main
+
+wifi:
+  ap:
+    password: "${wifi_ap_password}"
+
+captive_portal:
+
+improv_serial:
+
+speaker:
+  - platform: i2s_audio
+    dac_type: external
+    i2s_lrclk_pin: GPIO33
+    i2s_bclk_pin: GPIO19
+    mode: stereo
+    
+    
+#i2s_audio:
+#  - i2s_lrclk_pin: GPIO21
+ #   i2s_bclk_pin: GPIO22
+
+media_player:
+  - platform: speaker
+    id: media_out
+    name: None
+    dac_type: external
+    i2s_dout_pin: GPIO25
+    mode: mono
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO39
+      inverted: true
+    name: Button
+    on_click:
+      - media_player.toggle: media_out
+
+light:
+  - platform: fastled_clockless
+    name: None
+    pin: GPIO27
+    chipset: SK6812
+    num_leds: 1
+    rgb_order: grb
